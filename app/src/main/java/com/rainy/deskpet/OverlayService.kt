@@ -5,7 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.Build
@@ -150,25 +149,19 @@ class OverlayService : Service() {
             packageManager.getLaunchIntentForPackage(packageName),
             PendingIntent.FLAG_IMMUTABLE
         )
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Notification.Builder(this, CHANNEL_ID)
-                .setContentTitle("桌宠")
-                .setContentText(text)
-                .setSmallIcon(android.R.drawable.ic_menu_compass)
-                .setContentIntent(pendingIntent)
-                .setOngoing(true)
-                .setSilent(true)
-                .build()
         } else {
             @Suppress("DEPRECATION")
             Notification.Builder(this)
-                .setContentTitle("桌宠")
-                .setContentText(text)
-                .setSmallIcon(android.R.drawable.ic_menu_compass)
-                .setContentIntent(pendingIntent)
-                .setOngoing(true)
-                .build()
         }
+        return builder
+            .setContentTitle("桌宠")
+            .setContentText(text)
+            .setSmallIcon(android.R.drawable.ic_menu_compass)
+            .setContentIntent(pendingIntent)
+            .setOngoing(true)
+            .build()
     }
 
     private fun createNotificationChannel() {

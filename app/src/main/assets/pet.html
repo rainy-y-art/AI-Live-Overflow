@@ -17,19 +17,18 @@ body {
     user-select: none;
 }
 .pet {
-    width: 140px;
-    height: 140px;
+    width: 150px;
+    height: 150px;
     transition: transform 0.15s ease;
 }
 .pet.tap { transform: scale(1.12); }
 .pet.longpress { transform: scale(0.85); }
-.pet.sleepy { opacity: 0.6; transform: scale(0.9); }
 .bubble {
     position: absolute;
     top: 5px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(255,255,255,0.9);
+    background: rgba(255,255,255,0.92);
     border-radius: 12px;
     padding: 6px 10px;
     font-size: 11px;
@@ -53,42 +52,69 @@ body {
     height: 0;
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
-    border-top: 6px solid rgba(255,255,255,0.9);
+    border-top: 6px solid rgba(255,255,255,0.92);
+}
+.spout-dot {
+    opacity: 0;
+}
+.pet.spouting .spout-dot {
+    animation: rise 1.4s ease-out infinite;
+}
+.pet.spouting .d1 { animation-delay: 0s; }
+.pet.spouting .d2 { animation-delay: 0.35s; }
+.pet.spouting .d3 { animation-delay: 0.7s; }
+@keyframes rise {
+    0%   { opacity: 0; transform: translateY(0) scale(0.6); }
+    25%  { opacity: 0.9; }
+    100% { opacity: 0; transform: translateY(-22px) scale(1.1); }
+}
+.pet.wiggle { animation: wiggle 0.4s ease; }
+@keyframes wiggle {
+    0%,100% { transform: rotate(0deg); }
+    25% { transform: rotate(-6deg); }
+    75% { transform: rotate(6deg); }
 }
 </style>
 </head>
 <body>
 <div class="bubble" id="bubble"></div>
 <svg class="pet" id="pet" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- tail -->
+    <path d="M70 72 Q88 68 90 76 Q78 80 72 76 Z" fill="#4A7BE0"/>
     <!-- body -->
-    <ellipse cx="50" cy="58" rx="35" ry="30" fill="#f5e6d3"/>
-    <!-- ears -->
-    <polygon points="20,35 12,8 35,28" fill="#f5e6d3"/>
-    <polygon points="80,35 88,8 65,28" fill="#f5e6d3"/>
-    <polygon points="22,33 16,14 33,28" fill="#ffccd5"/>
-    <polygon points="78,33 84,14 67,28" fill="#ffccd5"/>
+    <ellipse cx="50" cy="58" rx="34" ry="29" fill="#5B8DEF"/>
+    <!-- belly -->
+    <ellipse cx="50" cy="66" rx="23" ry="16" fill="#E8F1FF"/>
+    <!-- dorsal fin -->
+    <path d="M47 30 Q50 20 53 30 Z" fill="#4A7BE0"/>
+    <!-- blowhole -->
+    <ellipse cx="50" cy="33" rx="2.5" ry="1.5" fill="#4A7BE0"/>
+    <!-- spout drops -->
+    <circle class="spout-dot d1" cx="50" cy="29" r="2" fill="#9CC6FF"/>
+    <circle class="spout-dot d2" cx="48" cy="27" r="1.6" fill="#BBD8FF"/>
+    <circle class="spout-dot d3" cx="52" cy="26" r="1.6" fill="#BBD8FF"/>
+    <!-- side fins -->
+    <ellipse cx="17" cy="58" rx="9" ry="5" fill="#4A7BE0" transform="rotate(-25 17 58)"/>
+    <ellipse cx="83" cy="58" rx="9" ry="5" fill="#4A7BE0" transform="rotate(25 83 58)"/>
     <!-- face -->
-    <ellipse cx="50" cy="55" rx="26" ry="20" fill="#fff5eb"/>
+    <ellipse cx="50" cy="57" rx="22" ry="17" fill="#E8F1FF" opacity="0.5"/>
     <!-- eyes -->
     <g id="eyes">
-        <circle cx="40" cy="52" r="5" fill="#3d3d3d"/>
-        <circle cx="60" cy="52" r="5" fill="#3d3d3d"/>
-        <circle cx="41.5" cy="50.5" r="2" fill="white"/>
-        <circle cx="61.5" cy="50.5" r="2" fill="white"/>
+        <circle cx="40" cy="50" r="5.5" fill="#2B3A55"/>
+        <circle cx="60" cy="50" r="5.5" fill="#2B3A55"/>
+        <circle cx="41.8" cy="48.5" r="2.2" fill="white"/>
+        <circle cx="61.8" cy="48.5" r="2.2" fill="white"/>
     </g>
     <!-- blink overlay -->
     <g id="blink" opacity="0">
-        <ellipse cx="40" cy="52" rx="6" ry="1.5" fill="#f5e6d3"/>
-        <ellipse cx="60" cy="52" rx="6" ry="1.5" fill="#f5e6d3"/>
+        <ellipse cx="40" cy="50" rx="6.5" ry="1.8" fill="#5B8DEF"/>
+        <ellipse cx="60" cy="50" rx="6.5" ry="1.8" fill="#5B8DEF"/>
     </g>
     <!-- blush -->
-    <ellipse cx="32" cy="58" rx="6" ry="4" fill="#ffb3b3" opacity="0.45"/>
-    <ellipse cx="68" cy="58" rx="6" ry="4" fill="#ffb3b3" opacity="0.45"/>
+    <ellipse cx="31" cy="56" rx="5.5" ry="3.5" fill="#FFB3C7" opacity="0.5"/>
+    <ellipse cx="69" cy="56" rx="5.5" ry="3.5" fill="#FFB3C7" opacity="0.5"/>
     <!-- mouth -->
-    <path id="mouth" d="M46 60 Q50 65 54 60" stroke="#3d3d3d" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-    <!-- paws -->
-    <ellipse cx="28" cy="80" rx="9" ry="6" fill="#f5e6d3"/>
-    <ellipse cx="72" cy="80" rx="9" ry="6" fill="#f5e6d3"/>
+    <path id="mouth" d="M45 58 Q50 63 55 58" stroke="#2B3A55" stroke-width="1.6" fill="none" stroke-linecap="round"/>
 </svg>
 <script>
 var bubbleTimer = null;
@@ -111,15 +137,28 @@ function blink() {
     }, 120);
 }
 
+function spout() {
+    var pet = document.getElementById('pet');
+    pet.classList.add('spouting');
+    setTimeout(function() {
+        pet.classList.remove('spouting');
+    }, 1500);
+}
+
 // random blinks
 setInterval(function() {
     if (Math.random() < 0.3) blink();
 }, 3000);
 
-// random idle animations
+// random spouting
+setInterval(function() {
+    if (Math.random() < 0.25) spout();
+}, 12000);
+
+// random idle messages
 var idleMessages = [
-    '好无聊呀', '你在干嘛', '看看你', '戳我干嘛',
-    '哼', 'zzz', '想你啦', '不许熬夜'
+    '在呢', '看着你呢', '乖', '不许熬夜',
+    '我在', '想你啦', '哼', '过来'
 ];
 
 setInterval(function() {
@@ -134,20 +173,21 @@ window.petEngine = {
         var pet = document.getElementById('pet');
         pet.classList.add('tap');
         blink();
-        var msgs = ['嗯?', '怎么啦', '诶嘿', '别戳'];
+        var msgs = ['嗯?', '怎么啦', '在呢', '诶嘿'];
         showBubble(msgs[Math.floor(Math.random() * msgs.length)], 1500);
         setTimeout(function() { pet.classList.remove('tap'); }, 200);
     },
     onDoubleTap: function() {
         var pet = document.getElementById('pet');
-        pet.style.transform = 'rotate(15deg)';
+        pet.classList.add('wiggle');
+        spout();
         showBubble('呀!', 1200);
-        setTimeout(function() { pet.style.transform = ''; }, 300);
+        setTimeout(function() { pet.classList.remove('wiggle'); }, 450);
     },
     onLongPress: function() {
         var pet = document.getElementById('pet');
         pet.classList.add('longpress');
-        showBubble('别捏了...', 2000);
+        showBubble('轻点嘛...', 2000);
         setTimeout(function() { pet.classList.remove('longpress'); }, 500);
     }
 };

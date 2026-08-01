@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+    background: transparent;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+.pet {
+    width: 140px;
+    height: 140px;
+    transition: transform 0.15s ease;
+}
+.pet.tap { transform: scale(1.12); }
+.pet.longpress { transform: scale(0.85); }
+.pet.sleepy { opacity: 0.6; transform: scale(0.9); }
+.bubble {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,255,255,0.9);
+    border-radius: 12px;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-family: sans-serif;
+    color: #333;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    max-width: 160px;
+    text-align: center;
+}
+.bubble.show { opacity: 1; }
+.bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid rgba(255,255,255,0.9);
+}
+</style>
+</head>
+<body>
+<div class="bubble" id="bubble"></div>
+<svg class="pet" id="pet" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- body -->
+    <ellipse cx="50" cy="58" rx="35" ry="30" fill="#f5e6d3"/>
+    <!-- ears -->
+    <polygon points="20,35 12,8 35,28" fill="#f5e6d3"/>
+    <polygon points="80,35 88,8 65,28" fill="#f5e6d3"/>
+    <polygon points="22,33 16,14 33,28" fill="#ffccd5"/>
+    <polygon points="78,33 84,14 67,28" fill="#ffccd5"/>
+    <!-- face -->
+    <ellipse cx="50" cy="55" rx="26" ry="20" fill="#fff5eb"/>
+    <!-- eyes -->
+    <g id="eyes">
+        <circle cx="40" cy="52" r="5" fill="#3d3d3d"/>
+        <circle cx="60" cy="52" r="5" fill="#3d3d3d"/>
+        <circle cx="41.5" cy="50.5" r="2" fill="white"/>
+        <circle cx="61.5" cy="50.5" r="2" fill="white"/>
+    </g>
+    <!-- blink overlay -->
+    <g id="blink" opacity="0">
+        <ellipse cx="40" cy="52" rx="6" ry="1.5" fill="#f5e6d3"/>
+        <ellipse cx="60" cy="52" rx="6" ry="1.5" fill="#f5e6d3"/>
+    </g>
+    <!-- blush -->
+    <ellipse cx="32" cy="58" rx="6" ry="4" fill="#ffb3b3" opacity="0.45"/>
+    <ellipse cx="68" cy="58" rx="6" ry="4" fill="#ffb3b3" opacity="0.45"/>
+    <!-- mouth -->
+    <path id="mouth" d="M46 60 Q50 65 54 60" stroke="#3d3d3d" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <!-- paws -->
+    <ellipse cx="28" cy="80" rx="9" ry="6" fill="#f5e6d3"/>
+    <ellipse cx="72" cy="80" rx="9" ry="6" fill="#f5e6d3"/>
+</svg>
+<script>
+var bubbleTimer = null;
+
+function showBubble(text, duration) {
+    var b = document.getElementById('bubble');
+    b.textContent = text;
+    b.classList.add('show');
+    if (bubbleTimer) clearTimeout(bubbleTimer);
+    bubbleTimer = setTimeout(function() {
+        b.classList.remove('show');
+    }, duration || 2500);
+}
+
+function blink() {
+    var blinkEl = document.getElementById('blink');
+    blinkEl.setAttribute('opacity', '1');
+    setTimeout(function() {
+        blinkEl.setAttribute('opacity', '0');
+    }, 120);
+}
+
+// random blinks
+setInterval(function() {
+    if (Math.random() < 0.3) blink();
+}, 3000);
+
+// random idle animations
+var idleMessages = [
+    '好无聊呀', '你在干嘛', '看看你', '戳我干嘛',
+    '哼', 'zzz', '想你啦', '不许熬夜'
+];
+
+setInterval(function() {
+    if (Math.random() < 0.15) {
+        var msg = idleMessages[Math.floor(Math.random() * idleMessages.length)];
+        showBubble(msg, 2000);
+    }
+}, 15000);
+
+window.petEngine = {
+    onTap: function() {
+        var pet = document.getElementById('pet');
+        pet.classList.add('tap');
+        blink();
+        var msgs = ['嗯?', '怎么啦', '诶嘿', '别戳'];
+        showBubble(msgs[Math.floor(Math.random() * msgs.length)], 1500);
+        setTimeout(function() { pet.classList.remove('tap'); }, 200);
+    },
+    onDoubleTap: function() {
+        var pet = document.getElementById('pet');
+        pet.style.transform = 'rotate(15deg)';
+        showBubble('呀!', 1200);
+        setTimeout(function() { pet.style.transform = ''; }, 300);
+    },
+    onLongPress: function() {
+        var pet = document.getElementById('pet');
+        pet.classList.add('longpress');
+        showBubble('别捏了...', 2000);
+        setTimeout(function() { pet.classList.remove('longpress'); }, 500);
+    }
+};
+</script>
+</body>
+</html>
